@@ -1,12 +1,13 @@
 Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl):	Prosty dzia³aj±cy z linii poleceñ interfejs do systemów obs³uguj±cych IPMI
 Name:		ipmitool
-Version:	1.5.9
-Release:	2
+Version:	1.6.0
+Release:	1
 License:	BSD
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
-# Source0-md5:	65ebe0ec6e153d0a1359b907aef5ff13
+Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.bz2
+# Source0-md5:	5f95cfc69531ee783eac5ec3939115b8
+URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
@@ -34,18 +35,6 @@ interfejsów IPMI-over-LAN, ale mo¿liwe jest tak¿e u¿ywanie interfejsu
 systemowego dostarczonego przez sterownik urz±dzenia w j±drze, taki
 jak OpenIPMI.
 
-%package devel
-Summary:	Header files to write ipmitool plugins
-Summary(pl):	Pliki nag³ówkowe do tworzenia wtyczek ipmitoola
-Group:		Development/Libraries
-# doesn't require base
-
-%description devel
-Header files to write ipmitool plugins.
-
-%description devel -l pl
-Pliki nag³ówkowe do tworzenia wtyczek ipmitoola.
-
 %prep
 %setup -q
 
@@ -56,11 +45,14 @@ Pliki nag³ówkowe do tworzenia wtyczek ipmitoola.
 %{__autoheader}
 %{__automake}
 %configure \
+	--enable-shared \
 	--disable-static \
 	--enable-intf-lan \
+	--enable-intf-lanplus \
 	--enable-intf-open \
-	--enable-ipmievd \
-	--with-plugin-path=%{_libdir}/%{name}
+	--enable-intf-imb \
+	--enable-ipmishell \
+	--enable-ipmievd
 %{__make}
 
 %install
@@ -76,12 +68,4 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING
 %attr(755,root,root) %{_bindir}/*
-%dir %{_libdir}/%{name}
-%attr(755,root,root) %{_libdir}/%{name}/*.so
-# lt_dlopen is used without extension
-%{_libdir}/%{name}/*.la
 %{_mandir}/man?/*
-
-%files devel
-%defattr(644,root,root,755)
-%{_includedir}/%{name}
