@@ -12,6 +12,7 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
+Obsoletes:	ipmitool-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
