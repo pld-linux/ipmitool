@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl):	Prosty dzia³aj±cy z linii poleceñ interfejs do systemów obs³uguj±cych IPMI
 Name:		ipmitool
 Version:	1.6.0
-Release:	1.1
+Release:	1.2
 License:	BSD
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.bz2
@@ -72,6 +72,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/*
-%dir %{_datadir}
-%{_datadir}/*
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/*
 %{_mandir}/man?/*
