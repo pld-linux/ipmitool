@@ -1,13 +1,14 @@
 Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl):	Prosty dzia³aj±cy z linii poleceñ interfejs do systemów obs³uguj±cych IPMI
 Name:		ipmitool
-Version:	1.6.0
-Release:	1.2
+Version:	1.8.1
+Release:	0.2
 License:	BSD
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.bz2
-# Source0-md5:	5f95cfc69531ee783eac5ec3939115b8
+# Source0-md5:	e24e00b077af2f00590cb09c4cfe5f7d
 Patch0:		%{name}-nodoc.patch
+Patch1:		%{name}-typo.patch
 URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -39,8 +40,8 @@ jak OpenIPMI.
 
 %prep
 %setup -q
-# maybe it's just easier to rm -rf installed docs
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize} --ltdl
@@ -72,6 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_sbindir}/*
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
 %{_mandir}/man?/*
