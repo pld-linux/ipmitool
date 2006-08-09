@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl):	Prosty dzia³aj±cy z linii poleceñ interfejs do systemów obs³uguj±cych IPMI
 Name:		ipmitool
 Version:	1.8.8
-Release:	2
+Release:	3
 License:	BSD
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
