@@ -1,0 +1,46 @@
+diff -ur ipmitool-1.8.8/include/ipmitool/helper.h ipmitool-1.8.8/include/ipmitool/helper.h
+--- ipmitool-1.8.8/include/ipmitool/helper.h	2006-03-19 18:59:38.000000000 +0100
++++ ipmitool-1.8.8/include/ipmitool/helper.h	2006-08-31 15:28:42.299513715 +0200
+@@ -54,7 +54,7 @@
+ void printbuf(const uint8_t * buf, int len, const char * desc);
+ uint8_t ipmi_csum(uint8_t * d, int s);
+ FILE * ipmi_open_file(const char * file, int rw);
+-void ipmi_start_daemon(void);
++void ipmi_start_daemon(int used_fd);
+ 
+ #define ipmi_open_file_read(file)	ipmi_open_file(file, 0)
+ #define ipmi_open_file_write(file)	ipmi_open_file(file, 1)
+Tylko w ipmitool-1.8.8/include/ipmitool: helper.h~
+diff -ur ipmitool-1.8.8/lib/helper.c ipmitool-1.8.8/lib/helper.c
+--- ipmitool-1.8.8/lib/helper.c	2006-03-28 18:56:56.000000000 +0200
++++ ipmitool-1.8.8/lib/helper.c	2006-08-31 15:28:36.802400339 +0200
+@@ -344,7 +344,7 @@
+ }
+ 
+ void
+-ipmi_start_daemon(void)
++ipmi_start_daemon(int used_fd)
+ {
+ 	pid_t pid;
+ 	int fd;
+@@ -398,7 +398,7 @@
+ 	chdir("/");
+ 	umask(0);
+ 
+-	for (fd=0; fd<64; fd++)
++	for (fd=0; fd<64 && fd != used_fd ; fd++)
+ 		close(fd);
+ 
+ 	open("/dev/null", O_RDWR);
+diff -ur ipmitool-1.8.8/src/ipmievd.c ipmitool-1.8.8/src/ipmievd.c
+--- ipmitool-1.8.8/src/ipmievd.c	2006-05-02 01:22:44.000000000 +0200
++++ ipmitool-1.8.8/src/ipmievd.c	2006-08-31 15:28:09.856550116 +0200
+@@ -654,7 +654,7 @@
+ 		FILE *fp;
+ 		struct stat st1;
+ 
+-		ipmi_start_daemon();
++		ipmi_start_daemon(eintf->intf);
+ 
+ 		if (lstat(pidfile, &st1) == 0) {
+ 			/* already exists, erase first */
