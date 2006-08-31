@@ -40,7 +40,7 @@ diff -ur ipmitool-1.8.8/src/ipmievd.c ipmitool-1.8.8/src/ipmievd.c
  		struct stat st1;
  
 -		ipmi_start_daemon();
-+		ipmi_start_daemon(eintf->intf);
++		ipmi_start_daemon(eintf->intf->fd);
  
  		if (lstat(pidfile, &st1) == 0) {
  			/* already exists, erase first */
