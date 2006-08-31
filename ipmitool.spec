@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl):	Prosty dzia³aj±cy z linii poleceñ interfejs do systemów obs³uguj±cych IPMI
 Name:		ipmitool
 Version:	1.8.8
-Release:	3
+Release:	4
 License:	BSD
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
@@ -10,6 +10,7 @@ Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
 Patch0:		%{name}-nodoc.patch
+Patch1:		%{name}-fd.patch
 URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -57,6 +58,7 @@ wysy³ane do SEL i loguje wiadomo¶ci do sysloga.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize} --ltdl
