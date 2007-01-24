@@ -1,16 +1,15 @@
 Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl):	Prosty dzia³aj±cy z linii poleceñ interfejs do systemów obs³uguj±cych IPMI
 Name:		ipmitool
-Version:	1.8.8
-Release:	5
+Version:	1.8.8.90
+Release:	1
 License:	BSD
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
-# Source0-md5:	8ae20a7621b00148acacab5b44540f3e
+# Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
+Source0:	http://ep09.pld-linux.org/~arekm/ipmitool/%{name}-%{version}.tar.bz2
+# Source0-md5:	8b776d8c78cb7a306d669385a975b9c1
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
-Patch0:		%{name}-nodoc.patch
-Patch1:		%{name}-fd.patch
 URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -57,8 +56,6 @@ wysy³ane do SEL i loguje wiadomo¶ci do sysloga.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize} --ltdl
@@ -104,8 +101,6 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/*
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/*
 %{_mandir}/man1/*
 
 %files ipmievd
