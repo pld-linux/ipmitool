@@ -20,7 +20,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 IPMItool is a simple command-line interface to systems that support
-the Intelligent Platform Management Interface (IPMI) v1.5
+the Intelligent Platform Management Interface (IPMI) v1.5 and v2.0
 specification. It provides the ability to read the SDR and print
 sensor values, display the contents of the SEL, print FRU information,
 read and set LAN configuration parameters, and perform chassis power
@@ -31,7 +31,7 @@ by a kernel device driver such as OpenIPMI.
 %description -l pl
 IPMItool to prosty, dzia³aj±cy z linii poleceñ interfejs do systemów
 obs³uguj±cych specyfikacjê Intelligent Platform Management Interface
-(IPMI) v1.5. Daje mo¿liwo¶æ odczytu SDR i wypisania warto¶ci
+(IPMI) v1.5 i v2.0. Daje mo¿liwo¶æ odczytu SDR i wypisania warto¶ci
 czujników, wy¶wietlenia zawarto¶ci SEL, wypisania informacji FRU,
 odczytu i ustawiania parametrów konfiguracji LAN i sterowania
 zasilaniem. Narzêdzie napisano pierwotnie w celu wykorzystania
