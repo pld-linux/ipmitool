@@ -1,5 +1,5 @@
 Summary:	Simple command-line interface to systems that support the IPMI
-Summary(pl):	Prosty dzia≥aj±cy z linii poleceÒ interfejs do systemÛw obs≥uguj±cych IPMI
+Summary(pl.UTF-8):   Prosty dzia≈ÇajƒÖcy z linii polece≈Ñ interfejs do system√≥w obs≈ÇugujƒÖcych IPMI
 Name:		ipmitool
 Version:	1.8.8.90
 Release:	1
@@ -28,20 +28,20 @@ control. Originally written to take advantage of IPMI-over-LAN
 interfaces, it is also capable of using a system interface as provided
 by a kernel device driver such as OpenIPMI.
 
-%description -l pl
-IPMItool to prosty, dzia≥aj±cy z linii poleceÒ interfejs do systemÛw
-obs≥uguj±cych specyfikacjÍ Intelligent Platform Management Interface
-(IPMI) v1.5 i v2.0. Daje moøliwo∂Ê odczytu SDR i wypisania warto∂ci
-czujnikÛw, wy∂wietlenia zawarto∂ci SEL, wypisania informacji FRU,
-odczytu i ustawiania parametrÛw konfiguracji LAN i sterowania
-zasilaniem. NarzÍdzie napisano pierwotnie w celu wykorzystania
-interfejsÛw IPMI-over-LAN, ale moøliwe jest takøe uøywanie interfejsu
-systemowego dostarczonego przez sterownik urz±dzenia w j±drze, taki
+%description -l pl.UTF-8
+IPMItool to prosty, dzia≈ÇajƒÖcy z linii polece≈Ñ interfejs do system√≥w
+obs≈ÇugujƒÖcych specyfikacjƒô Intelligent Platform Management Interface
+(IPMI) v1.5 i v2.0. Daje mo≈ºliwo≈õƒá odczytu SDR i wypisania warto≈õci
+czujnik√≥w, wy≈õwietlenia zawarto≈õci SEL, wypisania informacji FRU,
+odczytu i ustawiania parametr√≥w konfiguracji LAN i sterowania
+zasilaniem. Narzƒôdzie napisano pierwotnie w celu wykorzystania
+interfejs√≥w IPMI-over-LAN, ale mo≈ºliwe jest tak≈ºe u≈ºywanie interfejsu
+systemowego dostarczonego przez sterownik urzƒÖdzenia w jƒÖdrze, taki
 jak OpenIPMI.
 
 %package ipmievd
 Summary:	IPMI event daemon for sending events to syslog
-Summary(pl):	Demon IPMI przesy≥aj±cy zdarzenia do sysloga
+Summary(pl.UTF-8):   Demon IPMI przesy≈ÇajƒÖcy zdarzenia do sysloga
 Group:		Networking/Daemons
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
@@ -50,9 +50,9 @@ Requires:	rc-scripts
 ipmievd is a daemon which will listen for events from the BMC that are
 being sent to the SEL and also log those messages to syslog.
 
-%description ipmievd -l pl
-ipmievd to demon, ktÛry nas≥uchuje na zdarzenia z BMC, ktÛre s±
-wysy≥ane do SEL i loguje wiadomo∂ci do sysloga.
+%description ipmievd -l pl.UTF-8
+ipmievd to demon, kt√≥ry nas≈Çuchuje na zdarzenia z BMC, kt√≥re sƒÖ
+wysy≈Çane do SEL i loguje wiadomo≈õci do sysloga.
 
 %prep
 %setup -q
