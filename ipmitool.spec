@@ -1,5 +1,5 @@
 Summary:	Simple command-line interface to systems that support the IPMI
-Summary(pl.UTF-8):	Prosty działający z linii poleceń interfejs do systemów obsługujących IPMI
+Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.9
 Release:	1
