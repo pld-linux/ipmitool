@@ -1,5 +1,0 @@
-# interface
-IPMIEVD_INTERFACE="open"
-
-# see man page for additional options
-IPMIEVD_OPTIONS="open daemon"
