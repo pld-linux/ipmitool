@@ -15,6 +15,7 @@ BuildRequires:	automake
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.268
+Requires(post,preun): /sbin/chkconfig
 Requires:	rc-scripts
 Obsoletes:	ipmitool-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
