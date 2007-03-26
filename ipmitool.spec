@@ -14,6 +14,8 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
+BuildRequires:	rpmbuild(macros) >= 1.268
+Requires:	rc-scripts
 Obsoletes:	ipmitool-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -105,6 +107,6 @@ fi
 %files ipmievd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/*
-%{_mandir}/man8/*
 %attr(754,root,root) /etc/rc.d/init.d/ipmievd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ipmievd
+%{_mandir}/man8/*
