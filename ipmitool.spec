@@ -1,12 +1,12 @@
 Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
-Version:	1.8.9
-Release:	2
+Version:	1.8.10
+Release:	1
 License:	BSD
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
-# Source0-md5:	f122ea1171f8950306b49ddeb4d12f7e
+# Source0-md5:	282f3a3837399eae885512a4026bf5e1
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
 URL:		http://ipmitool.sourceforge.net/
@@ -70,8 +70,7 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 	--enable-intf-lanplus \
 	--enable-intf-open \
 	--enable-intf-imb \
-	--enable-ipmishell \
-	--enable-ipmievd
+	--enable-ipmishell
 %{__make}
 
 %install
@@ -101,6 +100,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/*
+%{_datadir}/ipmitool
 %{_mandir}/man1/*
 
 %files ipmievd
