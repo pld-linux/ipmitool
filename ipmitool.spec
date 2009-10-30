@@ -66,10 +66,13 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 %configure \
 	--enable-shared \
 	--disable-static \
+	--enable-intf-bmc \
+	--enable-intf-free \
+	--enable-intf-imb \
 	--enable-intf-lan \
 	--enable-intf-lanplus \
+	--enable-intf-lipmi \
 	--enable-intf-open \
-	--enable-intf-imb \
 	--enable-ipmishell
 %{__make}
 
