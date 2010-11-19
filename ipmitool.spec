@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.11
-Release:	4
+Release:	5
 License:	BSD
 Group:		Applications/System
 Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
@@ -57,6 +57,9 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 
 %prep
 %setup -q
+%undos include/ipmitool/ipmi_kontronoem.h
+%undos lib/ipmi_fwum.c
+%undos src/plugins/open/open.c
 %patch0 -p1
 
 %build
