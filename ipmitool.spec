@@ -10,7 +10,7 @@ Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
 URL:		http://ipmitool.sourceforge.net/
-BuildRequires:	autoconf >= 2.50
+BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
