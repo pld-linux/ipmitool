@@ -5,7 +5,7 @@ Version:	1.8.11
 Release:	7
 License:	BSD
 Group:		Applications/System
-Source0:	http://dl.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
+Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 # Source0-md5:	0f9b4758c2b7e8a7bafc2ead113b4bc6
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
@@ -82,9 +82,11 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/{rc.d/init.d,sysconfig}
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/ipmievd
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/ipmievd
+install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig}
+install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmievd
+cp -a %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ipmievd
+
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -95,20 +97,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun ipmievd
 if [ "$1" = "0" ]; then
-        %service ipmievd stop
-        /sbin/chkconfig --del ipmievd
+	%service ipmievd stop
+	/sbin/chkconfig --del ipmievd
 fi
 
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/ipmitool
 %{_datadir}/ipmitool
-%{_mandir}/man1/*
+%{_mandir}/man1/ipmitool.1*
 
 %files ipmievd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/*
-%attr(754,root,root) /etc/rc.d/init.d/ipmievd
+%attr(755,root,root) %{_sbindir}/ipmievd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ipmievd
-%{_mandir}/man8/*
+%attr(754,root,root) /etc/rc.d/init.d/ipmievd
+%{_mandir}/man8/ipmievd.8*
