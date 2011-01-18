@@ -1,76 +1,93 @@
 #!/bin/sh
 #
-# ipmievd		This shell script takes care of starting and stopping ipmievd.
+# ipmievd daemon to send events to syslog
 #
 # chkconfig:	2345 80 30
-# description:	ipmievd is a IPMI event daemon
 #
-# processname:	ipmievd
-# config:
-# pidfile:
+# description: ipmievd daemon to send events to syslog
+#
+# Description: Start ipmievd to read events from BMC and
+#	           log them to syslog.
+#	           Events correspond to hardware faults,
+#	           state transitions such as power on and off, and sensor
+#	           readings such as temperature, voltage and fan speed that
+#	           are abnormal.
+#
+# processname: ipmievd
+# config:      /etc/sysconfig/ipmievd
+#
+# $Id$
 
-# Source function library.
+# Source function library
 . /etc/rc.d/init.d/functions
 
-# Source networking configuration.
-. /etc/sysconfig/network
+IPMIEVD_OPTIONS=
+IPMIEVD_INTERFACE=open
 
-# Source oident configureation.
-if [ -f /etc/sysconfig/ipmievd ]; then
-	. /etc/sysconfig/ipmievd
-fi
+# Get service config - may override defaults
+[ -f /etc/sysconfig/ipmievd ] && . /etc/sysconfig/ipmievd
 
-[ -z "$IPMIEVD_INTERFACE" ] && IPMIEVD_INTERFACE="open"
-
-# Check that networking is up.
-if is_yes "${NETWORKING}"; then
-	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		msg_network_down ipmievd
-		exit 1
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/ipmievd ]; then
+		msg_already_running "ipmievd"
+		return
 	fi
-else
-	exit 0
-fi
+
+	msg_starting "ipmievd"
+	daemon /usr/sbin/ipmievd -I $IPMIEVD_INTERFACE $IPMIEVD_OPTIONS
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ipmievd
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/ipmievd ]; then
+		msg_not_running "ipmievd"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "ipmievd"
+	killproc ipmievd
+	rm -f /var/lock/subsys/ipmievd
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/ipmievd ]; then
+		msg_not_running "ipmievd"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
 
 RETVAL=0
 # See how we were called.
 case "$1" in
   start)
-	# Start daemons.
-	if [ ! -f /var/lock/subsys/ipmievd ]; then
-		msg_starting ipmievd
-		daemon ipmievd -I $IPMIEVD_INTERFACE $IPMIEVD_OPTIONS
-		RETVAL=$?
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/ipmievd
-	else
-		msg_already_running ipmievd
-	fi
+	start
 	;;
   stop)
-	# Stop daemons.
-	if [ -f /var/lock/subsys/ipmievd ]; then
-		msg_stopping ipmievd
-		killproc ipmievd
-		rm -f /var/lock/subsys/ipmievd >/dev/null 2>&1
-	else
-		msg_not_running ipmievd
-	fi
+	stop
 	;;
-  restart|force-reload)
-	$0 stop
-	$0 start
-	exit $?
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
 	;;
   status)
 	status ipmievd
-	exit $?
+	RETVAL=$?
 	;;
-#  reload)
-#	msg_reloading ipmievd
-#	killproc ipmievd -HUP
-#	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|status}"
 	exit 3
 esac
 
