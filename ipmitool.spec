@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.11
-Release:	7
+Release:	8
 License:	BSD
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
@@ -10,6 +10,7 @@ Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
 Source3:	ipmi.init
+Source4:	ipmi.sysconfig
 URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
@@ -89,6 +90,7 @@ install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig}
 install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmievd
 cp -a %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ipmievd
 install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmi
+cp -a %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/ipmi
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
@@ -119,6 +121,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/ipmitool
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ipmi
 %attr(754,root,root) /etc/rc.d/init.d/ipmi
 %{_datadir}/ipmitool
 %{_mandir}/man1/ipmitool.1*
