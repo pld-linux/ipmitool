@@ -9,10 +9,13 @@ Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 # Source0-md5:	0f9b4758c2b7e8a7bafc2ead113b4bc6
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
+Source3:	ipmi.init
 URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
+Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.268
 Obsoletes:	ipmitool-devel
@@ -85,11 +88,22 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig}
 install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmievd
 cp -a %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ipmievd
+install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmi
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post
+/sbin/chkconfig --add ipmi
+# NOTE: we do not restart ipmi on upgrade
+
+%preun
+if [ "$1" = "0" ]; then
+	/sbin/chkconfig --del ipmi
+	# NOTE: ipmi stop doesn't do anything
+fi
 
 %post ipmievd
 /sbin/chkconfig --add ipmievd
@@ -105,6 +119,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/ipmitool
+%attr(754,root,root) /etc/rc.d/init.d/ipmi
 %{_datadir}/ipmitool
 %{_mandir}/man1/ipmitool.1*
 
