@@ -2,23 +2,20 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.11
-Release:	8
+Release:	9
 License:	BSD
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 # Source0-md5:	0f9b4758c2b7e8a7bafc2ead113b4bc6
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
-Source3:	ipmi.init
-Source4:	ipmi.sysconfig
 URL:		http://ipmitool.sourceforge.net/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
-Requires(post,preun):	/sbin/chkconfig
-Requires:	rc-scripts
 BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.268
+Suggests:	ipmi-init
 Obsoletes:	ipmitool-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -89,23 +86,11 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig}
 install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmievd
 cp -a %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ipmievd
-install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmi
-cp -a %{SOURCE4} $RPM_BUILD_ROOT/etc/sysconfig/ipmi
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%post
-/sbin/chkconfig --add ipmi
-# NOTE: we do not restart ipmi on upgrade
-
-%preun
-if [ "$1" = "0" ]; then
-	/sbin/chkconfig --del ipmi
-	# NOTE: ipmi stop doesn't do anything
-fi
 
 %post ipmievd
 /sbin/chkconfig --add ipmievd
