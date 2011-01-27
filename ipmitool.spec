@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.11
-Release:	9
+Release:	10
 License:	BSD
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
@@ -106,8 +106,6 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/ipmitool
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/ipmi
-%attr(754,root,root) /etc/rc.d/init.d/ipmi
 %{_datadir}/ipmitool
 %{_mandir}/man1/ipmitool.1*
 
