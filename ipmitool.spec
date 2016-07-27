@@ -15,7 +15,6 @@ BuildRequires:	automake
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.268
-Suggests:	ipmi-init
 Obsoletes:	ipmitool-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
