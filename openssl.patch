@@ -96,3 +96,219 @@ index d5fac37..3c0df23 100644
  		}
  	}
  
+commit 77fe5635037ebaf411cae46cf5045ca819b5c145
+Author: Zdenek Styblik <stybla@turnovfree.net>
+Date:   Sun Jan 15 15:11:25 2017 +0100
+
+    ID:461 - Make compiler happier about changes related to OpenSSL 1.1
+    
+    Complaint was that ctx isn't initialized.
+
+diff --git a/src/plugins/lanplus/lanplus_crypt_impl.c b/src/plugins/lanplus/lanplus_crypt_impl.c
+index 3c0df23..d12d0e3 100644
+--- a/src/plugins/lanplus/lanplus_crypt_impl.c
++++ b/src/plugins/lanplus/lanplus_crypt_impl.c
+@@ -164,7 +164,7 @@ lanplus_encrypt_aes_cbc_128(const uint8_t * iv,
+ 							uint8_t       * output,
+ 							uint32_t        * bytes_written)
+ {
+-	EVP_CIPHER_CTX* ctx;
++	EVP_CIPHER_CTX *ctx = NULL;
+ 	EVP_CIPHER_CTX_init(ctx);
+ 	EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
+ 	EVP_CIPHER_CTX_set_padding(ctx, 0);
+@@ -239,7 +239,7 @@ lanplus_decrypt_aes_cbc_128(const uint8_t * iv,
+ 							uint8_t       * output,
+ 							uint32_t        * bytes_written)
+ {
+-	EVP_CIPHER_CTX* ctx;
++	EVP_CIPHER_CTX *ctx = NULL;
+ 	EVP_CIPHER_CTX_init(ctx);
+ 	EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
+ 	EVP_CIPHER_CTX_set_padding(ctx, 0);
+commit f004b4b7197fc83e7d47ec8cbcaefffa9a922717
+Author: Zdenek Styblik <stybla@turnovfree.net>
+Date:   Sun Mar 12 14:00:35 2017 +0100
+
+    ID:480 - ipmitool coredumps in EVP_CIPHER_CTX_init
+    
+    IPMI tool coredumps due to changes introduced in ID:461. This shouldn't be
+    surprise as a NULL pointer is passed to init. Commit addresses this issue by
+    calling EVP_CIPHER_CTX_new() instead of EVP_CIPHER_CTX_init(), which is
+    deprecated, and by checking return value of call to former function.
+
+diff --git a/src/plugins/lanplus/lanplus_crypt_impl.c b/src/plugins/lanplus/lanplus_crypt_impl.c
+index d12d0e3..0e330c1 100644
+--- a/src/plugins/lanplus/lanplus_crypt_impl.c
++++ b/src/plugins/lanplus/lanplus_crypt_impl.c
+@@ -165,10 +165,13 @@ lanplus_encrypt_aes_cbc_128(const uint8_t * iv,
+ 							uint32_t        * bytes_written)
+ {
+ 	EVP_CIPHER_CTX *ctx = NULL;
+-	EVP_CIPHER_CTX_init(ctx);
++	ctx = EVP_CIPHER_CTX_new();
++	if (ctx == NULL) {
++		*bytes_written = 0;
++		return;
++	}
+ 	EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
+ 	EVP_CIPHER_CTX_set_padding(ctx, 0);
+-	
+ 
+ 	*bytes_written = 0;
+ 
+@@ -240,11 +243,14 @@ lanplus_decrypt_aes_cbc_128(const uint8_t * iv,
+ 							uint32_t        * bytes_written)
+ {
+ 	EVP_CIPHER_CTX *ctx = NULL;
+-	EVP_CIPHER_CTX_init(ctx);
++	ctx = EVP_CIPHER_CTX_new();
++	if (ctx == NULL) {
++		*bytes_written = 0;
++		return;
++	}
+ 	EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
+ 	EVP_CIPHER_CTX_set_padding(ctx, 0);
+ 
+-
+ 	if (verbose >= 5)
+ 	{
+ 		printbuf(iv,  16, "decrypting with this IV");
+commit 1664902525a1c3771b4d8b3ccab7ea1ba6b2bdd1
+Author: Holger Liebig <holger.liebig@ts.fujitsu.com>
+Date:   Tue Apr 4 20:43:05 2017 +0200
+
+    ID:480 - Call EVP_CIPHER_CTX_free() instead of EVP_CIPHER_CTX_cleanup()
+    
+    Call EVP_CIPHER_CTX_free() instead of EVP_CIPHER_CTX_cleanup() to fix memory
+    leak.
+
+diff --git a/src/plugins/lanplus/lanplus_crypt_impl.c b/src/plugins/lanplus/lanplus_crypt_impl.c
+index 0e330c1..9652a5e 100644
+--- a/src/plugins/lanplus/lanplus_crypt_impl.c
++++ b/src/plugins/lanplus/lanplus_crypt_impl.c
+@@ -165,13 +165,6 @@ lanplus_encrypt_aes_cbc_128(const uint8_t * iv,
+ 							uint32_t        * bytes_written)
+ {
+ 	EVP_CIPHER_CTX *ctx = NULL;
+-	ctx = EVP_CIPHER_CTX_new();
+-	if (ctx == NULL) {
+-		*bytes_written = 0;
+-		return;
+-	}
+-	EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
+-	EVP_CIPHER_CTX_set_padding(ctx, 0);
+ 
+ 	*bytes_written = 0;
+ 
+@@ -185,6 +178,14 @@ lanplus_encrypt_aes_cbc_128(const uint8_t * iv,
+ 		printbuf(input, input_length, "encrypting this data");
+ 	}
+ 
++	ctx = EVP_CIPHER_CTX_new();
++	if (ctx == NULL) {
++		lprintf(LOG_DEBUG, "ERROR: EVP_CIPHER_CTX_new() failed");
++		return;
++	}
++	EVP_CIPHER_CTX_init(ctx);
++	EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
++	EVP_CIPHER_CTX_set_padding(ctx, 0);
+ 
+ 	/*
+ 	 * The default implementation adds a whole block of padding if the input
+@@ -198,7 +199,6 @@ lanplus_encrypt_aes_cbc_128(const uint8_t * iv,
+ 	{
+ 		/* Error */
+ 		*bytes_written = 0;
+-		return;
+ 	}
+ 	else
+ 	{
+@@ -206,16 +206,17 @@ lanplus_encrypt_aes_cbc_128(const uint8_t * iv,
+ 
+ 		if(!EVP_EncryptFinal_ex(ctx, output + *bytes_written, (int *)&tmplen))
+ 		{
++			/* Error */
+ 			*bytes_written = 0;
+-			return; /* Error */
+ 		}
+ 		else
+ 		{
+ 			/* Success */
+ 			*bytes_written += tmplen;
+-			EVP_CIPHER_CTX_cleanup(ctx);
+ 		}
+ 	}
++	/* performs cleanup and free */
++	EVP_CIPHER_CTX_free(ctx);
+ }
+ 
+ 
+@@ -243,13 +244,6 @@ lanplus_decrypt_aes_cbc_128(const uint8_t * iv,
+ 							uint32_t        * bytes_written)
+ {
+ 	EVP_CIPHER_CTX *ctx = NULL;
+-	ctx = EVP_CIPHER_CTX_new();
+-	if (ctx == NULL) {
+-		*bytes_written = 0;
+-		return;
+-	}
+-	EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
+-	EVP_CIPHER_CTX_set_padding(ctx, 0);
+ 
+ 	if (verbose >= 5)
+ 	{
+@@ -258,12 +252,20 @@ lanplus_decrypt_aes_cbc_128(const uint8_t * iv,
+ 		printbuf(input, input_length, "decrypting this data");
+ 	}
+ 
+-
+ 	*bytes_written = 0;
+ 
+ 	if (input_length == 0)
+ 		return;
+ 
++	ctx = EVP_CIPHER_CTX_new();
++	if (ctx == NULL) {
++		lprintf(LOG_DEBUG, "ERROR: EVP_CIPHER_CTX_new() failed");
++		return;
++	}
++	EVP_CIPHER_CTX_init(ctx);
++	EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv);
++	EVP_CIPHER_CTX_set_padding(ctx, 0);
++
+ 	/*
+ 	 * The default implementation adds a whole block of padding if the input
+ 	 * data is perfectly aligned.  We would like to keep that from happening.
+@@ -277,7 +279,6 @@ lanplus_decrypt_aes_cbc_128(const uint8_t * iv,
+ 		/* Error */
+ 		lprintf(LOG_DEBUG, "ERROR: decrypt update failed");
+ 		*bytes_written = 0;
+-		return;
+ 	}
+ 	else
+ 	{
+@@ -285,20 +286,21 @@ lanplus_decrypt_aes_cbc_128(const uint8_t * iv,
+ 
+ 		if (!EVP_DecryptFinal_ex(ctx, output + *bytes_written, (int *)&tmplen))
+ 		{
++			/* Error */
+ 			char buffer[1000];
+ 			ERR_error_string(ERR_get_error(), buffer);
+ 			lprintf(LOG_DEBUG, "the ERR error %s", buffer);
+ 			lprintf(LOG_DEBUG, "ERROR: decrypt final failed");
+ 			*bytes_written = 0;
+-			return; /* Error */
+ 		}
+ 		else
+ 		{
+ 			/* Success */
+ 			*bytes_written += tmplen;
+-			EVP_CIPHER_CTX_cleanup(ctx);
+ 		}
+ 	}
++	/* performs cleanup and free */
++	EVP_CIPHER_CTX_free(ctx);
+ 
+ 	if (verbose >= 5)
+ 	{
