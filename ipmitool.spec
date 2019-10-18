@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.18
-Release:	5
+Release:	6
 License:	BSD
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
@@ -68,7 +68,7 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 %configure \
 	--enable-shared \
 	--disable-static \
-	--enable-intf-bmc \
+	--disable-intf-bmc \
 	--enable-intf-free \
 	--enable-intf-imb \
 	--enable-intf-lan \
