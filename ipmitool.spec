@@ -2,7 +2,7 @@ Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
 Version:	1.8.18
-Release:	6
+Release:	7
 License:	BSD
 Group:		Applications/System
 Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
@@ -10,6 +10,7 @@ Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
 Patch0:		openssl.patch
+Patch1:		fno-common.patch
 URL:		https://github.com/ipmitool/ipmitool
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
@@ -58,6 +59,7 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize} --ltdl
