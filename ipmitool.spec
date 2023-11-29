@@ -1,16 +1,17 @@
 Summary:	Simple command-line interface to systems that support the IPMI
 Summary(pl.UTF-8):	Prosty interfejs do systemów obsługujących IPMI działający z linii poleceń
 Name:		ipmitool
-Version:	1.8.18
-Release:	7
+Version:	1.8.19
+Release:	1
 License:	BSD
 Group:		Applications/System
-Source0:	http://downloads.sourceforge.net/ipmitool/%{name}-%{version}.tar.gz
-# Source0-md5:	55304c6c5b994784222d3944d086fa30
+Source0:	https://github.com/ipmitool/ipmitool/archive/refs/tags/IPMITOOL_1_8_19.tar.gz
+# Source0-md5:	0aa41c99d93ce129cf00a9b8803ed8c9
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
-Patch0:		openssl.patch
-Patch1:		fno-common.patch
+Source3:	https://www.iana.org/assignments/enterprise-numbers.txt
+# Source3-md5:	16631b297ca2f1d6b0481dc4957f25c8
+Patch0:		no-download.patch
 URL:		https://github.com/ipmitool/ipmitool
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
@@ -57,9 +58,8 @@ ipmievd to demon, który nasłuchuje na zdarzenia z BMC, które są
 wysyłane do SEL i loguje wiadomości do sysloga.
 
 %prep
-%setup -q
+%setup -q -n %{name}-IPMITOOL_1_8_19
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize} --ltdl
@@ -77,7 +77,8 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 	--enable-intf-lanplus \
 	--enable-intf-lipmi \
 	--enable-intf-open \
-	--enable-ipmishell
+	--enable-ipmishell \
+        --disable-registry-download
 %{__make}
 
 %install
@@ -87,8 +88,10 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig}
+install -d $RPM_BUILD_ROOT%{_datadir}/misc
 install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipmievd
 cp -a %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/ipmievd
+cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/misc/enterprise-numbers
 
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
@@ -110,6 +113,7 @@ fi
 %doc AUTHORS COPYING README ChangeLog
 %attr(755,root,root) %{_bindir}/ipmitool
 %{_datadir}/ipmitool
+%{_datadir}/misc/enterprise-numbers
 %{_mandir}/man1/ipmitool.1*
 
 %files ipmievd
