@@ -5,7 +5,7 @@ Version:	1.8.19
 Release:	1
 License:	BSD
 Group:		Applications/System
-Source0:	https://github.com/ipmitool/ipmitool/archive/refs/tags/IPMITOOL_1_8_19.tar.gz
+Source0:	https://github.com/ipmitool/ipmitool/archive/refs/tags/IPMITOOL_%{version}.tar.gz
 # Source0-md5:	0aa41c99d93ce129cf00a9b8803ed8c9
 Source1:	%{name}-ipmievd.init
 Source2:	%{name}-ipmievd.sysconfig
@@ -17,8 +17,10 @@ BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool
+BuildRequires:	openssl-devel
+BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
-Obsoletes:	ipmitool-devel
+Obsoletes:	ipmitool-devel < 1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
