@@ -62,7 +62,7 @@ wysyłane do SEL i loguje wiadomości do sysloga.
 
 %prep
 %setup -q -n %{name}-IPMITOOL_1_8_19
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 %{__libtoolize} --ltdl
